@@ -1,4 +1,4 @@
-const CACHE_NAME = 'origin2026-v4';
+const CACHE_NAME = 'origin2026-v5';
 const BASE = '/origin2026';
 
 const PRECACHE_URLS = [

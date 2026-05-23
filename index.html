@@ -377,17 +377,22 @@
     <div id="home-upcoming"></div>
   </div>
   <div class="card">
-    <div class="card-title">🎟 쿠폰 현황</div>
+    <div class="flex-between" style="margin-bottom:8px;">
+      <div class="card-title" style="margin:0;">🎟 쿠폰 현황</div>
+      <button class="btn btn-primary btn-sm" style="font-size:10px;padding:4px 8px;" onclick="openAddCouponManual()">+ 할인권 추가/차감</button>
+    </div>
     <div id="home-coupons"></div>
+    <div style="margin-top:6px;font-size:10px;color:var(--text3);text-align:center;">할인권 증정 및 사용 기간: 2026.03.07 ~ 2026.05.31</div>
   </div>
   <div class="card">
-    <div class="card-title" onclick="toggleHomeStamps()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
-      <span>🎫 마니아 카드 현황</span>
-      <span id="home-stamps-toggle-icon" style="font-size:11px;color:var(--text3);">▲</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="display:flex;align-items:flex-end;gap:5px;min-width:0;flex:1;overflow:hidden;">
+        <div class="card-title" style="margin:0;white-space:nowrap;">🎫 마니아 카드 현황</div>
+        <div style="font-size:9px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">5칸: 50%할인권 2매 또는 실황 OST</div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="font-size:10px;padding:3px 7px;flex-shrink:0;margin-left:6px;" onclick="openAddStampBoard()">+ 새 마니아 카드</button>
     </div>
-    <div id="home-stamps-wrap">
-      <div id="home-stamps" style="margin-top:8px;"></div>
-    </div>
+    <div id="stamp-boards-list"></div>
   </div>
   <div class="card">
     <div class="card-title">📋 최근 관람</div>
@@ -450,39 +455,6 @@
   <div id="cal-day-records"></div>
 </div>
 
-<!-- ========== COUPON / STAMP ========== -->
-<div class="page" id="page-coupon">
-  <div class="page-header">
-    <div class="page-title">쿠폰·도장</div>
-  </div>
-
-  <div class="card" style="margin-bottom:16px;">
-    <div class="flex-between" style="margin-bottom:12px;">
-      <div class="card-title" style="margin:0;">쿠폰 현황</div>
-      <button class="btn btn-primary btn-sm" onclick="openAddCouponManual()">+ 쿠폰 추가/차감</button>
-    </div>
-    <div id="coupon-list"></div>
-  </div>
-
-  <div class="card" style="margin-bottom:16px;">
-    <div class="flex-between" style="margin-bottom:4px;">
-      <div class="card-title" style="margin:0;">쿠폰 상세 기록</div>
-      <button id="coupon-history-toggle-icon" onclick="toggleCouponHistory()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:2px 4px;">▲</button>
-    </div>
-    <div id="coupon-history-wrap">
-      <div id="coupon-all-history" style="margin-top:8px;"></div>
-    </div>
-  </div>
-
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="font-size:12px;font-weight:700;color:var(--text2);">마니아 카드</div>
-      <button class="btn btn-outline btn-sm" onclick="openAddStampBoard()">+ 마니아 카드</button>
-    </div>
-    <div style="font-size:11px;color:var(--text3);">5칸 : 50% 할인권 2매 또는 실황 OST</div>
-  </div>
-  <div id="stamp-boards-list" style="margin-bottom:16px;"></div>
-</div>
 
 <!-- ========== STATS ========== -->
 <div class="page" id="page-stats">
@@ -567,7 +539,6 @@
 <nav class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('home',this)"><span class="icon">🏠</span><span>홈</span></button>
   <button class="tab-btn" onclick="switchTab('calendar',this)"><span class="icon">📅</span><span>캘린더</span></button>
-  <button class="tab-btn" onclick="switchTab('coupon',this)"><span class="icon">🎫</span><span>쿠폰</span></button>
   <button class="tab-btn" onclick="switchTab('stats',this)"><span class="icon">😌</span><span>통계</span></button>
   <button class="tab-btn" onclick="switchTab('settings',this)"><span class="icon">⚙️</span><span>설정</span></button>
 </nav>
@@ -925,6 +896,18 @@
   </div>
 </div>
 
+<!-- ===== COUPON DETAIL PANEL ===== -->
+<div class="overlay" id="overlay-coupon-detail">
+  <div class="panel">
+    <div class="panel-handle"></div>
+    <div class="flex-between" style="margin-bottom:16px;">
+      <div class="panel-title" id="coupon-detail-title"></div>
+      <button class="btn-icon" onclick="closePanel('overlay-coupon-detail')">✕</button>
+    </div>
+    <div id="coupon-detail-content"></div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // DATA LAYER
@@ -979,7 +962,6 @@ function switchTab(name, btn) {
   if (name==='home')     renderHome();
   if (name==='calendar') renderCalendar();
   if (name==='stats')    renderStats();
-  if (name==='coupon')   renderCoupon();
   if (name==='settings') {
     const savedAt = localStorage.getItem('scheduleUpdatedAt');
     const timeEl  = document.getElementById('schedule-update-time');
@@ -1413,12 +1395,6 @@ function renderHome() {
   const today   = localDate();
   const dow     = ['일','월','화','수','목','금','토'];
 
-  const stampsCollapsed = DB.get('homeStampsCollapsed', false);
-  const stampsWrap = document.getElementById('home-stamps-wrap');
-  const stampsIcon = document.getElementById('home-stamps-toggle-icon');
-  if (stampsWrap) stampsWrap.style.display = stampsCollapsed ? 'none' : '';
-  if (stampsIcon) stampsIcon.textContent   = stampsCollapsed ? '▼' : '▲';
-
   const upcoming = records
     .filter(r => r.date >= today)
     .sort((a,b) => a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
@@ -1471,43 +1447,9 @@ function renderHome() {
     upcomingCard.style.display = 'none';
   }
 
-  // 마니아 카드
+  // 마니아 카드 (stamp-boards-list is on home page)
   const boards = getStampBoards();
-  {
-    const stampHtml = (() => {
-      if (boards.length === 0) return `<div style="color:var(--text3);font-size:13px;text-align:center;padding:8px;">마니아 카드가 없습니다</div>`;
-      const slides = boards.map(b => {
-        const { cur, final } = calcStampCounts(b);
-        const total = b.totalSlots || 5;
-        const done  = cur >= total;
-        let dots = '';
-        for (let i = 1; i <= total; i++) {
-          const filled    = i <= cur;
-          const scheduled = i > cur && i <= final;
-          const ms        = (b.milestones||[]).find(m => m.at === i);
-          const msLabel   = ms ? '★' : '';
-          dots += `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-            <div style="width:36px;height:36px;border-radius:50%;
-              background:${filled ? 'transparent' : scheduled ? 'rgba(42,125,206,0.08)' : 'var(--bg3)'};
-              border:2px solid ${filled ? 'var(--accent)' : scheduled ? 'var(--accent)' : 'var(--border)'};
-              display:flex;align-items:center;justify-content:center;font-size:18px;">
-              ${filled ? '🎭' : ''}
-            </div>
-            <div style="font-size:8px;font-weight:700;color:${msLabel ? 'var(--accent)' : 'transparent'};">${msLabel||'.'}</div>
-          </div>`;
-        }
-        const cardStyle = boards.length === 1 ? 'width:100%;' : 'min-width:100%;scroll-snap-align:start;flex-shrink:0;';
-        return `<div style="${cardStyle}box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;">
-          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:12px;">[🎫 ${b.name}]${done?' 🎉':''}</div>
-          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:4px;">${dots}</div>
-          <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px;">현재 ${cur}칸 · 예정 ${final}칸</div>
-        </div>`;
-      }).join('');
-      const wrapStyle = boards.length === 1 ? '' : 'overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;display:flex;-webkit-overflow-scrolling:touch;padding:2px 0 6px;';
-      return `<div style="${wrapStyle}">${slides}</div>`;
-    })();
-    document.getElementById('home-stamps').innerHTML = stampHtml;
-  }
+  renderStampBoards();
 
   // 쿠폰
   const coupons  = getCoupons();
@@ -1536,7 +1478,7 @@ function renderHome() {
         + boards.reduce((s,b)=>s+(b.milestones||[]).filter(m=>m.couponKey===item.key&&m.notified).reduce((t,m)=>t+(m.qty||1),0),0);
       const used   = records.filter(r=>(DISCOUNT_COUPON_MAP[r.discountType]||null)===item.key).length
         + (coupons[item.key]?.history||[]).filter(h=>h.type==='사용').reduce((s,h)=>s+(h.qty||1),0);
-      return `<div class="coupon-card">
+      return `<div class="coupon-card" onclick="openCouponDetail('${item.key}')" style="cursor:pointer;">
         <div class="coupon-card-label">${item.label}</div>
         <div class="coupon-card-sub-row">
           <div class="coupon-card-sub">현재</div>
@@ -2462,6 +2404,7 @@ function updateRecQtyLabel() {
 let _couponHistoryKey = '';
 
 function renderCouponList() {
+  if (!document.getElementById('coupon-list')) return;
   const coupons = getCoupons();
   const boards  = getStampBoards();
   const records = getRecords();
@@ -2593,7 +2536,83 @@ function deleteCouponHistoryRow(key, originalIdx) {
   coupons[key].count = calcCouponCount(key, coupons, boards);
   saveCoupons(coupons);
   renderCouponList(); renderHome();
+  const panel = document.getElementById('overlay-coupon-detail');
+  if (panel && panel.classList.contains('open')) openCouponDetail(key);
   showToast('이력이 삭제되었습니다');
+}
+
+function openCouponDetail(key) {
+  const item = COUPON_ITEMS.find(i => i.key === key);
+  if (!item) return;
+  document.getElementById('coupon-detail-title').textContent = item.label + ' 이력';
+  const coupons = getCoupons();
+  const boards  = getStampBoards();
+  const records = getRecords();
+  const dow = ['일','월','화','수','목','금','토'];
+  const allRows = [];
+
+  // 수동 이력
+  (coupons[key]?.history || []).forEach((h, idx) => {
+    if (h.type === '복원') return;
+    if (h.comment && (h.comment.includes('달성 보상') || h.comment.includes('칸 달성'))) return;
+    if (h.type === '사용' && h.comment && h.comment.includes('관람 사용')) return;
+    allRows.push({ ...h, originalIdx: idx, rowType: 'manual' });
+  });
+
+  // 도장판 milestone 달성 보상
+  boards.forEach(b => {
+    (b.milestones || []).forEach(m => {
+      if (!m.notified || m.couponKey !== key) return;
+      const date = getStampAchievedDate(b, m.at);
+      allRows.push({ date, type: '획득', comment: `[🎫 ${b.name}] ${m.at}칸 달성`, isMilestone: true, qty: 1, originalIdx: -1, rowType: 'milestone' });
+    });
+  });
+
+  // 관람 기록 사용분
+  records.forEach(r => {
+    if ((DISCOUNT_COUPON_MAP[r.discountType] || null) !== key) return;
+    const cast = [r.yujinA, r.yujinB, r.haejin, r.jiwon].filter(Boolean).join(' · ');
+    allRows.push({ date: r.date, type: '사용', comment: cast + ' 관람', qty: 1, originalIdx: -1, rowType: 'record' });
+  });
+
+  allRows.sort((a, b) => a.date.localeCompare(b.date));
+
+  const el = document.getElementById('coupon-detail-content');
+  if (!allRows.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px;text-align:center;">이력 없음</div>';
+    openPanel('overlay-coupon-detail');
+    return;
+  }
+
+  const rows = allRows.map(h => {
+    const d = new Date(h.date + 'T00:00:00');
+    const dateStr = `${parseInt(h.date.slice(5,7))}.${parseInt(h.date.slice(8,10))}(${dow[d.getDay()]})`;
+    const isGet   = h.type === '획득';
+    const typeHtml = isGet ? `<span class="hist-type-get">획득</span>` : `<span class="hist-type-use">사용</span>`;
+    const qty    = h.qty || 1;
+    const delta  = isGet ? `<span class="hist-delta-pos">+${qty}</span>` : `<span class="hist-delta-neg">-${qty}</span>`;
+    const milestoneBadge = h.isMilestone ? `<span class="hist-milestone-badge">달성</span>` : '';
+    const memo   = (h.comment || '') + milestoneBadge;
+    const delBtn = h.rowType === 'manual'
+      ? `<button class="hist-del-btn" onclick="deleteCouponHistoryRow('${key}',${h.originalIdx})">✕</button>`
+      : '';
+    return `<tr>
+      <td>${dateStr}</td>
+      <td>${typeHtml}</td>
+      <td>${delta}</td>
+      <td style="text-align:left;color:var(--text2);font-size:11px;">${memo}</td>
+      <td>${delBtn}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `<table class="coupon-hist-table">
+    <thead><tr>
+      <th style="text-align:center;">날짜</th><th>유형</th><th>변동</th><th style="text-align:left;">메모</th><th></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+
+  openPanel('overlay-coupon-detail');
 }
 
 function openAddCouponManual() {
@@ -2685,7 +2704,7 @@ function importData(e) {
       if (data.coupons)     saveCoupons(data.coupons);
       if (data.settings)  { saveSettings(data.settings); applyDark(data.settings.darkMode); }
       showToast('데이터를 성공적으로 불러왔습니다');
-      renderHome(); renderCalendar(); renderCoupon(); renderStats();
+      renderHome(); renderCalendar(); renderStats();
     } catch { showToast('파일 형식 오류'); }
   };
   reader.readAsText(file);
@@ -2700,7 +2719,6 @@ function refreshCurrentPage() {
   if (id==='page-home')     renderHome();
   if (id==='page-calendar') renderCalendar();
   if (id==='page-stats')    renderStats();
-  if (id==='page-coupon')   renderCoupon();
 }
 
 // ============================================================
