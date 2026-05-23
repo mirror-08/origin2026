@@ -1,1 +1,20 @@
-[]
+[
+  {"date":"2026-06-23","time":"20:00","yujinA":"기세중","yujinB":"박상혁","haejin":"노희찬","jiwon":"류비"},
+  {"date":"2026-06-24","time":"20:00","yujinA":"이종석","yujinB":"변희상","haejin":"김건울","jiwon":"강하나"},
+  {"date":"2026-06-25","time":"20:00","yujinA":"신은총","yujinB":"정재환","haejin":"도해","jiwon":"김사라"},
+  {"date":"2026-06-26","time":"20:00","yujinA":"기세중","yujinB":"박상혁","haejin":"노희찬","jiwon":"류비"},
+  {"date":"2026-06-27","time":"15:00","yujinA":"이종석","yujinB":"변희상","haejin":"김건울","jiwon":"김사라"},
+  {"date":"2026-06-27","time":"19:00","yujinA":"신은총","yujinB":"정재환","haejin":"도해","jiwon":"류비"},
+  {"date":"2026-06-28","time":"14:00","yujinA":"기세중","yujinB":"박상혁","haejin":"노희찬","jiwon":"강하나"},
+  {"date":"2026-06-28","time":"18:00","yujinA":"이종석","yujinB":"변희상","haejin":"김건울","jiwon":"김사라"},
+  {"date":"2026-06-30","time":"20:00","yujinA":"신은총","yujinB":"정재환","haejin":"도해","jiwon":"김사라"},
+  {"date":"2026-07-01","time":"16:00","yujinA":"기세중","yujinB":"변희상","haejin":"노희찬","jiwon":"강하나"},
+  {"date":"2026-07-01","time":"20:00","yujinA":"이종석","yujinB":"정재환","haejin":"김건울","jiwon":"류비"},
+  {"date":"2026-07-02","time":"20:00","yujinA":"신은총","yujinB":"박상혁","haejin":"도해","jiwon":"김사라"},
+  {"date":"2026-07-03","time":"20:00","yujinA":"기세중","yujinB":"정재환","haejin":"김건울","jiwon":"강하나"},
+  {"date":"2026-07-04","time":"15:00","yujinA":"이종석","yujinB":"박상혁","haejin":"도해","jiwon":"강하나"},
+  {"date":"2026-07-04","time":"19:00","yujinA":"신은총","yujinB":"변희상","haejin":"노희찬","jiwon":"류비"},
+  {"date":"2026-07-05","time":"14:00","yujinA":"기세중","yujinB":"박상혁","haejin":"김건울","jiwon":"김사라"},
+  {"date":"2026-07-05","time":"18:00","yujinA":"이종석","yujinB":"변희상","haejin":"도해","jiwon":"류비"},
+  {"date":"2026-07-06","time":"20:00","yujinA":"김이후","yujinB":"김려원","haejin":"최민경","jiwon":"강하나"}
+]

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'origin2026-v5';
+const CACHE_NAME = 'origin2026-v7';
 const BASE = '/origin2026';
 
 const PRECACHE_URLS = [
@@ -29,14 +29,23 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
   if (url.pathname.endsWith('schedule.json') || url.pathname.endsWith('events.json')) {
+    const baseUrl = url.origin + url.pathname;
     event.respondWith(
       fetch(event.request)
         .then(response => {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then(cache => {
+            // 타임스탬프 없는 기본 URL로도 캐시 (오프라인 폴백용)
+            cache.put(event.request, clone);
+            cache.put(baseUrl, response.clone());
+          });
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() =>
+          // 타임스탬프 포함 URL → 기본 URL 순으로 폴백
+          caches.match(event.request)
+            .then(r => r || caches.match(baseUrl))
+        )
     );
     return;
   }

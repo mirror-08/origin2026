@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>🎭 종의 기원 관극 다이어리</title>
+<title>🌊 종의 기원 관극 다이어리</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2a7dce">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -236,7 +236,7 @@
 
   /* HOME */
   .next-show-card { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); border-radius: var(--radius); padding: 18px; margin-bottom: 8px; color: #fff; position: relative; overflow: hidden; cursor: pointer; }
-  .next-show-card::before { content: '🎭'; position: absolute; right: 16px; top: 12px; font-size: 40px; opacity: 0.15; }
+  .next-show-card::before { content: '🌊'; position: absolute; right: 16px; top: 12px; font-size: 40px; opacity: 0.15; }
   .next-show-dday { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 4px; }
   .next-show-dday.today-dday { color: #ffe066; }
   .next-show-date { font-size: 13px; opacity: 0.85; margin-bottom: 10px; }
@@ -282,7 +282,20 @@
   .chip.active  { background: var(--accent); border-color: var(--accent); color: #fff; }
 
   /* STAMP / COUPON */
-  .stamp-cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stamp-cards-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  /* 원형 도장 슬롯 */
+  .stamp-slots-row { display: flex; justify-content: center; gap: 8px; padding: 10px 0 4px; flex-wrap: wrap; }
+  .stamp-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .stamp-slot {
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 2.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; background: var(--bg3); transition: all 0.2s; flex-shrink: 0;
+  }
+  .stamp-slot.filled { border-color: var(--accent); background: var(--accent-light); }
+  .stamp-slot.scheduled { border-color: var(--border); background: var(--bg3); opacity: 0.55; }
+  .stamp-slot-label { font-size: 9px; color: var(--text3); font-weight: 600; text-align: center; min-height: 12px; }
   .stamp-board { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; transition: opacity 0.2s; }
   .stamp-board.paused { opacity: 0.45; }
   .stamp-board-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
@@ -368,7 +381,7 @@
 <!-- ========== HOME ========== -->
 <div class="page active" id="page-home">
   <div class="page-header">
-    <div class="page-title">🎭 종의 기원</div>
+    <div class="page-title">🌊 종의 기원</div>
     <button class="btn btn-primary btn-sm" onclick="openAddRecord()">+ 기록</button>
   </div>
   <div id="home-next-show"></div>
@@ -387,7 +400,7 @@
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
       <div style="display:flex;align-items:flex-end;gap:5px;min-width:0;flex:1;overflow:hidden;">
-        <div class="card-title" style="margin:0;white-space:nowrap;">🎫 마니아 카드 현황</div>
+        <div class="card-title" style="margin:0;white-space:nowrap;">📙 마니아 카드 현황</div>
         <div style="font-size:9px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">5칸: 50%할인권 2매 또는 실황 OST</div>
       </div>
       <button class="btn btn-outline btn-sm" style="font-size:10px;padding:3px 7px;flex-shrink:0;margin-left:6px;" onclick="openAddStampBoard()">+ 새 마니아 카드</button>
@@ -413,33 +426,38 @@
       <div id="cal-chips-yujinA" style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="cal-chip active" data-name="" onclick="setCalFilter('yujinA',null,this)">전체</button>
         <button class="cal-chip" data-name="기세중" onclick="setCalFilter('yujinA','기세중',this)">기세중</button>
-        <button class="cal-chip" data-name="변희상" onclick="setCalFilter('yujinA','변희상',this)">변희상</button>
+        <button class="cal-chip" data-name="이종석" onclick="setCalFilter('yujinA','이종석',this)">이종석</button>
+        <button class="cal-chip" data-name="신은총" onclick="setCalFilter('yujinA','신은총',this)">신은총</button>
+        <button class="cal-chip" data-name="김이후" onclick="setCalFilter('yujinA','김이후',this)">김이후</button>
       </div>
     </div>
     <div class="cal-filter-row">
       <span class="cal-filter-label">유진B</span>
       <div id="cal-chips-yujinB" style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="cal-chip active" data-name="" onclick="setCalFilter('yujinB',null,this)">전체</button>
-        <button class="cal-chip" data-name="노희찬" onclick="setCalFilter('yujinB','노희찬',this)">노희찬</button>
-        <button class="cal-chip" data-name="류비" onclick="setCalFilter('yujinB','류비',this)">류비</button>
+        <button class="cal-chip" data-name="박상혁" onclick="setCalFilter('yujinB','박상혁',this)">박상혁</button>
+        <button class="cal-chip" data-name="변희상" onclick="setCalFilter('yujinB','변희상',this)">변희상</button>
+        <button class="cal-chip" data-name="정재환" onclick="setCalFilter('yujinB','정재환',this)">정재환</button>
+        <button class="cal-chip" data-name="김려원" onclick="setCalFilter('yujinB','김려원',this)">김려원</button>
       </div>
     </div>
     <div class="cal-filter-row">
       <span class="cal-filter-label">해진</span>
       <div id="cal-chips-haejin" style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="cal-chip active" data-name="" onclick="setCalFilter('haejin',null,this)">전체</button>
-        <button class="cal-chip" data-name="기세중" onclick="setCalFilter('haejin','기세중',this)">기세중</button>
-        <button class="cal-chip" data-name="변희상" onclick="setCalFilter('haejin','변희상',this)">변희상</button>
         <button class="cal-chip" data-name="노희찬" onclick="setCalFilter('haejin','노희찬',this)">노희찬</button>
-        <button class="cal-chip" data-name="류비" onclick="setCalFilter('haejin','류비',this)">류비</button>
+        <button class="cal-chip" data-name="김건울" onclick="setCalFilter('haejin','김건울',this)">김건울</button>
+        <button class="cal-chip" data-name="도해" onclick="setCalFilter('haejin','도해',this)">도해</button>
+        <button class="cal-chip" data-name="최민경" onclick="setCalFilter('haejin','최민경',this)">최민경</button>
       </div>
     </div>
     <div class="cal-filter-row">
       <span class="cal-filter-label">지원</span>
       <div id="cal-chips-jiwon" style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="cal-chip active" data-name="" onclick="setCalFilter('jiwon',null,this)">전체</button>
-        <button class="cal-chip" data-name="김지원" onclick="setCalFilter('jiwon','김지원',this)">김지원</button>
-        <button class="cal-chip" data-name="김혜원" onclick="setCalFilter('jiwon','김혜원',this)">김혜원</button>
+        <button class="cal-chip" data-name="류비" onclick="setCalFilter('jiwon','류비',this)">류비</button>
+        <button class="cal-chip" data-name="강하나" onclick="setCalFilter('jiwon','강하나',this)">강하나</button>
+        <button class="cal-chip" data-name="김사라" onclick="setCalFilter('jiwon','김사라',this)">김사라</button>
       </div>
     </div>
     <div id="cal-filter-hint" style="font-size:11px;color:var(--text3);padding:2px 0 4px;">· 전체 회차 표시 중</div>
@@ -460,7 +478,7 @@
 <div class="page" id="page-stats">
   <div class="page-header"><div class="page-title">😌 통계</div></div>
   <div class="card">
-    <div class="card-title">🎭 배우별 관람 횟수</div>
+    <div class="card-title">🌊 배우별 관람 횟수</div>
     <table class="stats-table" id="stats-actors"></table>
   </div>
   <div class="card">
@@ -581,15 +599,19 @@
         <select class="form-control" id="rec-yujinA">
           <option value="">선택</option>
           <option value="기세중">기세중</option>
-          <option value="변희상">변희상</option>
+          <option value="이종석">이종석</option>
+          <option value="신은총">신은총</option>
+          <option value="김이후">김이후</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">유진B *</label>
         <select class="form-control" id="rec-yujinB">
           <option value="">선택</option>
-          <option value="노희찬">노희찬</option>
-          <option value="류비">류비</option>
+          <option value="박상혁">박상혁</option>
+          <option value="변희상">변희상</option>
+          <option value="정재환">정재환</option>
+          <option value="김려원">김려원</option>
         </select>
       </div>
     </div>
@@ -598,18 +620,19 @@
         <label class="form-label">해진</label>
         <select class="form-control" id="rec-haejin">
           <option value="">-</option>
-          <option value="기세중">기세중</option>
-          <option value="변희상">변희상</option>
           <option value="노희찬">노희찬</option>
-          <option value="류비">류비</option>
+          <option value="김건울">김건울</option>
+          <option value="도해">도해</option>
+          <option value="최민경">최민경</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">지원</label>
         <select class="form-control" id="rec-jiwon">
           <option value="">-</option>
-          <option value="김지원">김지원</option>
-          <option value="김혜원">김혜원</option>
+          <option value="류비">류비</option>
+          <option value="강하나">강하나</option>
+          <option value="김사라">김사라</option>
         </select>
       </div>
     </div>
@@ -771,7 +794,7 @@
       <button class="btn-icon" onclick="closePanel('overlay-stamp')">✕</button>
     </div>
     <div style="background:var(--accent-light);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--accent);">
-      <div style="font-weight:700;margin-bottom:6px;">🎫 마니아 카드 혜택</div>
+      <div style="font-weight:700;margin-bottom:6px;">📙 마니아 카드 혜택</div>
       <div style="text-align:center;background:var(--bg1);border-radius:8px;padding:8px;">
         <div style="font-size:11px;color:var(--text3);margin-bottom:2px;">5칸 달성</div>
         <div style="font-weight:700;color:var(--text1);font-size:13px;">50% 할인권 2매 또는 실황 OST 선택</div>
@@ -1067,7 +1090,7 @@ function populateStampSelect(keepBoardId) {
     items.forEach(b => {
       const o = document.createElement('option');
       o.value = b.id;
-      o.textContent = `[🎫 ${b.name}] (${b.currentCount}/${b.totalSlots})${suffix}`;
+      o.textContent = `[📙 ${b.name}] (${b.currentCount}/${b.totalSlots})${suffix}`;
       if (disabled && b.id !== keepBoardId) { o.disabled = true; o.style.color = 'var(--text3)'; }
       grp.appendChild(o);
     });
@@ -1294,7 +1317,7 @@ function openDetail(id) {
       if (seq === null) seq = board.currentCount;
       const qty = r.stampQty || 1;
       const seqLabel = qty > 1 ? `[${seq}~${seq+qty-1}번째 도장] ×${qty}` : `${seq}번째 도장`;
-      html += `<div class="detail-field"><div class="detail-field-label">마니아 카드</div><div class="detail-field-value">[🎫 ${board.name}] ${seqLabel}</div></div>`;
+      html += `<div class="detail-field"><div class="detail-field-label">마니아 카드</div><div class="detail-field-value">[📙 ${board.name}] ${seqLabel}</div></div>`;
     }
   }
   if (r.memo) html += `<div class="detail-field"><div class="detail-field-label">감상 메모</div><div class="detail-field-value" style="font-size:14px;line-height:1.6;white-space:pre-wrap;">${r.memo}</div></div>`;
@@ -1421,7 +1444,7 @@ function renderHome() {
   } else {
     document.getElementById('home-next-show').innerHTML = `
       <div class="card" style="text-align:center;color:var(--text3);padding:20px;">
-        <div style="font-size:24px;margin-bottom:6px;">🎭</div>
+        <div style="font-size:24px;margin-bottom:6px;">🌊</div>
         <div style="font-size:13px;">예매 확정된 일정이 없습니다</div>
       </div>`;
   }
@@ -1762,10 +1785,10 @@ function toggleMoneyBlur() {
 function renderStats() {
   const records  = getRecords();
   const schedule = getSchedule();
-  const yujinAActors = ['기세중','변희상'];
-  const yujinBActors = ['노희찬','류비'];
-  const haejinActors = ['기세중','변희상','노희찬','류비'];
-  const jiwonActors  = ['김지원','김혜원'];
+  const yujinAActors = ['기세중','이종석','신은총','김이후'];
+  const yujinBActors = ['박상혁','변희상','정재환','김려원'];
+  const haejinActors = ['노희찬','김건울','도해','최민경'];
+  const jiwonActors  = ['류비','강하나','김사라'];
 
   const countAct = (f,n) => records.filter(r=>r[f]===n).length;
   const countSch = (f,n) => schedule.filter(s=>s[f]===n).length;
@@ -1781,28 +1804,26 @@ function renderStats() {
   jiwonActors.forEach(a => { ah += `<tr><td>${a}</td><td style="color:var(--text3)">${countSch('jiwon',a)}</td><td>${countAct('jiwon',a)}</td></tr>`; });
   document.getElementById('stats-actors').innerHTML = ah;
 
-  // 페어 (유진A × 유진B)
-  const pairs = [
-    ['기세중','노희찬'],['기세중','류비'],
-    ['변희상','노희찬'],['변희상','류비']
-  ];
-  let ph = '<tr><th>유진A</th><th>유진B</th><th>총 회차</th><th>관람</th></tr>';
-  pairs.forEach(([a,b]) => {
-    const tot  = schedule.filter(x=>x.yujinA===a&&x.yujinB===b).length;
-    const seen = records.filter(r=>r.yujinA===a&&r.yujinB===b).length;
-    if (tot>0||seen>0) ph += `<tr><td>${a}</td><td>${b}</td><td style="color:var(--text3)">${tot}</td><td>${seen}</td></tr>`;
+  // 페어 (유진A × 유진B) - 스케줄+기록 기반 동적 생성
+  const pairMap = {};
+  schedule.forEach(s => {
+    if (!s.yujinA || !s.yujinB) return;
+    const k = s.yujinA + '|' + s.yujinB;
+    if (!pairMap[k]) pairMap[k] = { a: s.yujinA, b: s.yujinB, tot: 0, seen: 0 };
+    pairMap[k].tot++;
   });
-  // 기록에만 있는 조합 추가
-  const seenPairs = new Set(pairs.map(([a,b])=>a+'|'+b));
   records.forEach(r => {
-    const k = r.yujinA+'|'+r.yujinB;
-    if (!seenPairs.has(k)) {
-      seenPairs.add(k);
-      const seen2 = records.filter(x=>x.yujinA===r.yujinA&&x.yujinB===r.yujinB).length;
-      ph += `<tr><td>${r.yujinA}</td><td>${r.yujinB}</td><td style="color:var(--text3)">-</td><td>${seen2}</td></tr>`;
-    }
+    if (!r.yujinA || !r.yujinB) return;
+    const k = r.yujinA + '|' + r.yujinB;
+    if (!pairMap[k]) pairMap[k] = { a: r.yujinA, b: r.yujinB, tot: 0, seen: 0 };
+    pairMap[k].seen++;
   });
-  if (!ph.includes('<td>')) ph += '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:12px;">기록 없음</td></tr>';
+  let ph = '<tr><th>유진A</th><th>유진B</th><th>총 회차</th><th>관람</th></tr>';
+  const sortedPairs = Object.values(pairMap).sort((x,y) => x.a.localeCompare(y.a,'ko') || x.b.localeCompare(y.b,'ko'));
+  sortedPairs.forEach(p => {
+    ph += `<tr><td>${p.a}</td><td>${p.b}</td><td style="color:var(--text3)">${p.tot||'-'}</td><td>${p.seen}</td></tr>`;
+  });
+  if (!sortedPairs.length) ph += '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:12px;">기록 없음</td></tr>';
   document.getElementById('stats-pairs').innerHTML = ph;
 
   renderHeatmap();
@@ -1917,11 +1938,20 @@ async function fetchEvents(manual = false) {
 // ============================================================
 const ACTOR_ROLES = [
   { name: '기세중', role: '유진A' },
-  { name: '변희상', role: '유진A' },
-  { name: '노희찬', role: '유진B' },
-  { name: '류비',   role: '유진B' },
-  { name: '김지원', role: '지원' },
-  { name: '김혜원', role: '지원' }
+  { name: '이종석', role: '유진A' },
+  { name: '신은총', role: '유진A' },
+  { name: '김이후', role: '유진A' },
+  { name: '박상혁', role: '유진B' },
+  { name: '변희상', role: '유진B' },
+  { name: '정재환', role: '유진B' },
+  { name: '김려원', role: '유진B' },
+  { name: '노희찬', role: '해진' },
+  { name: '김건울', role: '해진' },
+  { name: '도해',   role: '해진' },
+  { name: '최민경', role: '해진' },
+  { name: '류비',   role: '지원' },
+  { name: '강하나', role: '지원' },
+  { name: '김사라', role: '지원' }
 ];
 
 // ============================================================
@@ -1962,12 +1992,35 @@ function renderStampBoards() {
     const total    = b.totalSlots;
     const paused   = !!b.paused;
     const { cur, final } = calcStampCounts(b);
-    const pct      = Math.min(100, Math.round(cur / total * 100));
-    const finalPct = Math.min(100, Math.round(final / total * 100));
     const alldone  = cur >= total;
     const milestones = b.milestones || [{ at: 5 }];
     const nextMs   = [...milestones].sort((a,b2)=>a.at-b2.at).find(m => cur < m.at);
     const toNext   = nextMs ? nextMs.at - cur : null;
+
+    // 마일스톤 슬롯 라벨 생성
+    const slotLabels = {};
+    milestones.forEach(m => {
+      const r = m.reward || '';
+      const hasOst = r.includes('OST');
+      const has50  = r.includes('할인권') || r.includes('50%');
+      let label = '';
+      if (hasOst && has50) label = '선택';
+      else if (hasOst)     label = 'OST';
+      else if (has50)      label = '50%';
+      if (label) slotLabels[m.at] = label;
+    });
+
+    // 원형 도장 슬롯 생성
+    let slotsHtml = '<div class="stamp-slots-row">';
+    for (let i = 1; i <= total; i++) {
+      const isFilled    = i <= cur;
+      const isScheduled = !isFilled && i <= final;
+      const label       = slotLabels[i] || '';
+      const slotCls     = isFilled ? 'stamp-slot filled' : (isScheduled ? 'stamp-slot scheduled' : 'stamp-slot');
+      const labelColor  = isFilled ? 'color:var(--accent);' : '';
+      slotsHtml += `<div class="stamp-slot-wrap"><div class="${slotCls}">🌊</div><div class="stamp-slot-label" style="${labelColor}">${label}</div></div>`;
+    }
+    slotsHtml += '</div>';
 
     let statusHtml = '';
     if (paused)               statusHtml = `<div class="stamp-status-row stamp-status-paused">일시정지 중</div>`;
@@ -1976,7 +2029,7 @@ function renderStampBoards() {
 
     return `<div class="stamp-board${paused ? ' paused' : ''}">
       <div class="stamp-board-header">
-        <div class="stamp-board-name">[🎫 ${b.name}]</div>
+        <div class="stamp-board-name">[📙 ${b.name}]</div>
         <div class="stamp-board-menu">
           <button class="stamp-menu-btn" onclick="renameStampBoard('${b.id}')" title="이름 변경">📝</button>
           <button class="stamp-menu-btn" onclick="togglePauseStampBoard('${b.id}')" title="${paused ? '재개' : '일시정지'}">${paused ? '▶' : '⏸'}</button>
@@ -1987,12 +2040,7 @@ function renderStampBoards() {
         <span class="stamp-count-cur">현재 ${cur}칸</span>
         <span class="stamp-count-final">/ 최종 ${final}칸</span>
       </div>
-      <div class="stamp-progress-wrap">
-        <div class="progress-bar">
-          <div class="progress-fill" style="width:${finalPct}%;background:var(--border);"></div>
-          <div class="progress-fill" style="width:${pct}%;background:${paused ? 'var(--text3)' : 'var(--accent)'};margin-top:-12px;position:relative;"></div>
-        </div>
-      </div>
+      ${slotsHtml}
       ${statusHtml}
       <div class="stamp-actions">
         ${(!alldone && !paused) ? `<button class="btn btn-primary btn-sm" style="width:100%;" onclick="openAddStamp('${b.id}')">+ 도장 찍기</button>` : ''}
@@ -2019,7 +2067,7 @@ function renderStampHistoryPanel() {
   const boards = getStampBoards();
   const board  = boards.find(b => b.id === boardId);
   if (!board) return;
-  document.getElementById('stamp-history-panel-title').textContent = `[🎫 ${board.name}] 이력`;
+  document.getElementById('stamp-history-panel-title').textContent = `[📙 ${board.name}] 이력`;
   const sortedHistory = [...(board.history||[])].sort((a,z) => a.date.localeCompare(z.date));
   const el = document.getElementById('stamp-history-panel-content');
   if (!sortedHistory.length) {
@@ -2476,7 +2524,7 @@ function renderCouponAllHistory() {
       const item = COUPON_ITEMS.find(i => i.key === key);
       if (!item) return;
       const date = getStampAchievedDate(b, m.at);
-      allRows.push({ date, type: '획득', key, short: item.short, comment: `[🎫 ${b.name}] ${m.at}칸 달성`, isMilestone: true, qty: 1, originalIdx: -1, rowType: 'milestone' });
+      allRows.push({ date, type: '획득', key, short: item.short, comment: `[📙 ${b.name}] ${m.at}칸 달성`, isMilestone: true, qty: 1, originalIdx: -1, rowType: 'milestone' });
     });
   });
 
@@ -2564,7 +2612,7 @@ function openCouponDetail(key) {
     (b.milestones || []).forEach(m => {
       if (!m.notified || m.couponKey !== key) return;
       const date = getStampAchievedDate(b, m.at);
-      allRows.push({ date, type: '획득', comment: `[🎫 ${b.name}] ${m.at}칸 달성`, isMilestone: true, qty: 1, originalIdx: -1, rowType: 'milestone' });
+      allRows.push({ date, type: '획득', comment: `[📙 ${b.name}] ${m.at}칸 달성`, isMilestone: true, qty: 1, originalIdx: -1, rowType: 'milestone' });
     });
   });
 
