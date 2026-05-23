@@ -1,0 +1,23 @@
+{
+  "name": "종의 기원 관극 다이어리",
+  "short_name": "종의기원",
+  "description": "뮤지컬 종의 기원 관람 기록 앱",
+  "start_url": "/origin2026/",
+  "scope": "/origin2026/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2a7dce",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
