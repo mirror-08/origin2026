@@ -1449,22 +1449,41 @@ function renderHome() {
 
   // 마니아 카드
   const boards = getStampBoards();
-  document.getElementById('home-stamps').innerHTML = boards.length===0
-    ? `<div style="color:var(--text3);font-size:13px;text-align:center;padding:8px;">마니아 카드가 없습니다</div>`
-    : boards.map(b => {
+  {
+    const stampHtml = (() => {
+      if (boards.length === 0) return `<div style="color:var(--text3);font-size:13px;text-align:center;padding:8px;">마니아 카드가 없습니다</div>`;
+      const slides = boards.map(b => {
         const { cur, final } = calcStampCounts(b);
-        const scheduledPct = Math.min(100, Math.round(final / b.totalSlots * 100));
-        const actualPct    = Math.min(100, Math.round(cur   / b.totalSlots * 100));
-        const done = cur >= b.totalSlots;
-        return `<div class="home-stamp-row">
-          <div class="home-stamp-name">[🎫 ${b.name}]${done?' 🎉':''}</div>
-          <div class="home-stamp-bar">
-            <div class="home-stamp-bar-fill scheduled" style="width:${scheduledPct}%"></div>
-            <div class="home-stamp-bar-fill actual"    style="width:${actualPct}%"></div>
-          </div>
-          <div class="home-stamp-count">현재:${cur} / 예정:${final}</div>
+        const total = b.totalSlots || 5;
+        const done  = cur >= total;
+        let dots = '';
+        for (let i = 1; i <= total; i++) {
+          const filled    = i <= cur;
+          const scheduled = i > cur && i <= final;
+          const ms        = (b.milestones||[]).find(m => m.at === i);
+          const msLabel   = ms ? '★' : '';
+          dots += `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="width:36px;height:36px;border-radius:50%;
+              background:${filled ? 'transparent' : scheduled ? 'rgba(42,125,206,0.08)' : 'var(--bg3)'};
+              border:2px solid ${filled ? 'var(--accent)' : scheduled ? 'var(--accent)' : 'var(--border)'};
+              display:flex;align-items:center;justify-content:center;font-size:18px;">
+              ${filled ? '🎭' : ''}
+            </div>
+            <div style="font-size:8px;font-weight:700;color:${msLabel ? 'var(--accent)' : 'transparent'};">${msLabel||'.'}</div>
+          </div>`;
+        }
+        const cardStyle = boards.length === 1 ? 'width:100%;' : 'min-width:100%;scroll-snap-align:start;flex-shrink:0;';
+        return `<div style="${cardStyle}box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:12px;">[🎫 ${b.name}]${done?' 🎉':''}</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-bottom:4px;">${dots}</div>
+          <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px;">현재 ${cur}칸 · 예정 ${final}칸</div>
         </div>`;
       }).join('');
+      const wrapStyle = boards.length === 1 ? '' : 'overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;display:flex;-webkit-overflow-scrolling:touch;padding:2px 0 6px;';
+      return `<div style="${wrapStyle}">${slides}</div>`;
+    })();
+    document.getElementById('home-stamps').innerHTML = stampHtml;
+  }
 
   // 쿠폰
   const coupons  = getCoupons();
