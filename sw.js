@@ -1,8 +1,7 @@
-const CACHE_NAME = 'origin2026-v2';
+const CACHE_NAME = 'origin2026-v3';
 const BASE = '/origin2026';
 
-// 앱 시작 시 캐시할 파일들
-const PRECACHE_URLS = [
+// ???쒖옉 ??罹먯떆???뚯씪??const PRECACHE_URLS = [
   BASE + '/',
   BASE + '/index.html',
   BASE + '/manifest.json',
@@ -10,7 +9,7 @@ const PRECACHE_URLS = [
   BASE + '/icon-512.png',
 ];
 
-// install: 기본 파일 캐시
+// install: 湲곕낯 ?뚯씪 罹먯떆
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
@@ -18,7 +17,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// activate: 구 캐시 정리
+// activate: 援?罹먯떆 ?뺣━
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -28,11 +27,11 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// fetch: 네트워크 우선, 실패 시 캐시
+// fetch: ?ㅽ듃?뚰겕 ?곗꽑, ?ㅽ뙣 ??罹먯떆
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // schedule.json — 네트워크 우선 (최신 스케줄), 실패 시 캐시
+  // schedule.json ???ㅽ듃?뚰겕 ?곗꽑 (理쒖떊 ?ㅼ?以?, ?ㅽ뙣 ??罹먯떆
   if (url.pathname.endsWith('schedule.json') || url.pathname.endsWith('events.json')) {
     event.respondWith(
       fetch(event.request)
@@ -46,7 +45,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // 나머지 — 캐시 우선, 없으면 네트워크
+  // ?섎㉧吏 ??罹먯떆 ?곗꽑, ?놁쑝硫??ㅽ듃?뚰겕
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;

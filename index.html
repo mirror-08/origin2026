@@ -454,7 +454,6 @@
 <div class="page" id="page-coupon">
   <div class="page-header">
     <div class="page-title">쿠폰·도장</div>
-    <button class="btn btn-outline btn-sm" onclick="openAddStampBoard()">+ 마니아 카드</button>
   </div>
 
   <div class="card" style="margin-bottom:16px;">
@@ -466,16 +465,22 @@
   </div>
 
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title" onclick="toggleCouponHistory()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
-      <span>쿠폰 상세 기록</span>
-      <span id="coupon-history-toggle-icon" style="font-size:11px;color:var(--text3);">▼</span>
+    <div class="flex-between" style="margin-bottom:4px;">
+      <div class="card-title" style="margin:0;">쿠폰 상세 기록</div>
+      <button id="coupon-history-toggle-icon" onclick="toggleCouponHistory()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:2px 4px;">▲</button>
     </div>
-    <div id="coupon-history-wrap" style="display:none;">
+    <div id="coupon-history-wrap">
       <div id="coupon-all-history" style="margin-top:8px;"></div>
     </div>
   </div>
 
-  <div class="section-title" style="margin-bottom:8px;">마니아 카드</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);">마니아 카드</div>
+      <button class="btn btn-outline btn-sm" onclick="openAddStampBoard()">+ 마니아 카드</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);">5칸 : 50% 할인권 2매 또는 실황 OST</div>
+  </div>
   <div id="stamp-boards-list" style="margin-bottom:16px;"></div>
 </div>
 
@@ -825,15 +830,33 @@
     <div class="form-group">
       <label class="form-label">도장 추가 방식</label>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="직접 관람" checked onchange="updateStampMethodUI()"> 직접 관람 (1개)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="더블 적립" onchange="updateStampMethodUI()"> 더블 적립 (2개)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="트리플 적립" onchange="updateStampMethodUI()"> 트리플 적립 (3개)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="교환" onchange="updateStampMethodUI()"> 교환</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="직접 관람" checked onchange="updateStampSessionOptions()"> 직접 관람</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="더블 적립" onchange="updateStampSessionOptions()"> 더블 적립 <span style="font-size:11px;color:var(--text3);margin-left:4px;">(+2칸)</span></label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="트리플 적립" onchange="updateStampSessionOptions()"> 트리플 적립 <span style="font-size:11px;color:var(--text3);margin-left:4px;">(+3칸)</span></label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;"><input type="radio" name="stamp-method" value="교환" onchange="updateStampSessionOptions()"> 교환</label>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label class="form-label">수량</label>
+      <div style="display:flex;gap:8px;">
+        <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;font-size:14px;color:var(--accent);font-weight:700;" id="qty-label-1">
+          <input type="radio" name="stamp-qty" value="1" checked onchange="updateQtyLabel()"> 1개
+        </label>
+        <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;" id="qty-label-2">
+          <input type="radio" name="stamp-qty" value="2" onchange="updateQtyLabel()"> 2개
+        </label>
+        <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;" id="qty-label-3">
+          <input type="radio" name="stamp-qty" value="3" onchange="updateQtyLabel()"> 3개
+        </label>
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">날짜</label>
-      <input type="date" class="form-control" id="stamp-date">
+      <input type="date" class="form-control" id="stamp-date" onchange="updateStampSessionOptions()">
+    </div>
+    <div class="form-group" id="stamp-session-group" style="display:none;">
+      <label class="form-label">회차</label>
+      <div id="stamp-session-options" style="display:flex;flex-direction:column;gap:6px;"></div>
     </div>
     <div class="form-group" id="stamp-exchange-memo-group" style="display:none;">
       <label class="form-label">교환 내용</label>
@@ -1435,7 +1458,8 @@ function renderHome() {
       const diff2  = Math.round((d2-new Date(today+'T00:00:00'))/86400000);
       const dday2  = diff2===0 ? 'D-DAY' : `D-${diff2}`;
       const seat2  = r.seatZone ? `${r.seatZone} ${r.seatNumber}번` : '';
-      const cast   = r.yujinA + ' · ' + r.yujinB;
+      const castParts = [r.yujinA, r.yujinB, r.haejin, r.jiwon].filter(Boolean);
+      const cast = castParts.join(' · ');
       return `<div class="upcoming-item" onclick="openDetail('${r.id}')">
         <div class="upcoming-dday" style="${r.isBooked===false ? 'color:var(--text3);' : ''}">${dday2}</div>
         <div class="upcoming-date">${r.date.slice(5)} (${dow[d2.getDay()]}) ${r.time}</div>
@@ -1528,18 +1552,20 @@ function renderHome() {
 
   // 최근 관람
   const pastAll = records
-    .filter(r => r.date < today)
+    .filter(r => r.date <= today)
     .sort((a,b)=>b.date.localeCompare(a.date)||b.time.localeCompare(a.time));
   const showCount = DB.get('homeRecentCount', 3);
   const past = pastAll.slice(0, showCount);
   document.getElementById('home-recent').innerHTML = pastAll.length===0
     ? '<div style="text-align:center;color:var(--text3);padding:12px;font-size:13px;">기록이 없습니다</div>'
-    : past.map(r=>`
-        <div class="record-mini" onclick="openDetail('${r.id}')">
+    : past.map(r=>{
+        const castParts = [r.yujinA, r.yujinB, r.haejin, r.jiwon].filter(Boolean);
+        return `<div class="record-mini" onclick="openDetail('${r.id}')">
           <div class="record-date-badge">${r.date.slice(5)} ${r.time}</div>
-          <div class="record-casting">${r.yujinA} · ${r.yujinB}</div>
+          <div class="record-casting">${castParts.join(' · ')}</div>
           <div class="record-rating">${r.seatZone ? r.seatZone+' '+r.seatNumber+'번' : ''}</div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
   const moreEl = document.getElementById('home-recent-more');
   if (showCount < pastAll.length) {
     const addCount = Math.min(3, pastAll.length - showCount);
@@ -2228,20 +2254,55 @@ function togglePauseStampBoard(id) {
 function openAddStamp(boardId) {
   document.getElementById('stamp-board-id').value = boardId;
   document.querySelector('input[name="stamp-method"][value="직접 관람"]').checked = true;
+  const qtyEl = document.querySelector('input[name="stamp-qty"][value="1"]');
+  if (qtyEl) { qtyEl.checked = true; updateQtyLabel(); }
   const dateEl = document.getElementById('stamp-date');
   if (dateEl) dateEl.value = localDate();
   const commentEl = document.getElementById('stamp-comment');
   if (commentEl) commentEl.value = '';
   const exchangeMemoEl = document.getElementById('stamp-exchange-memo');
   if (exchangeMemoEl) exchangeMemoEl.value = '';
-  updateStampMethodUI();
+  updateStampSessionOptions();
   openPanel('overlay-add-stamp');
 }
 
-function updateStampMethodUI() {
-  const method = document.querySelector('input[name="stamp-method"]:checked')?.value;
+function updateQtyLabel() {
+  const checked = document.querySelector('input[name="stamp-qty"]:checked');
+  if (!checked) return;
+  const qty = checked.value;
+  [1,2,3].forEach(n => {
+    const label = document.getElementById('qty-label-'+n);
+    if (!label) return;
+    const active = String(n) === qty;
+    label.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+    label.style.color       = active ? 'var(--accent)' : '';
+    label.style.fontWeight  = active ? '700' : '';
+  });
+}
+
+function updateStampSessionOptions() {
+  const method    = document.querySelector('input[name="stamp-method"]:checked')?.value;
+  const date      = document.getElementById('stamp-date')?.value;
+  const group     = document.getElementById('stamp-session-group');
+  const container = document.getElementById('stamp-session-options');
   const exchangeMemoGroup = document.getElementById('stamp-exchange-memo-group');
   if (exchangeMemoGroup) exchangeMemoGroup.style.display = method === '교환' ? '' : 'none';
+  if (!group || !container) return;
+  if (!date) { group.style.display = 'none'; return; }
+  const sessions = getSchedule().filter(s => s.date === date);
+  if (!sessions.length || method !== '직접 관람') { group.style.display = 'none'; return; }
+  group.style.display = '';
+  container.innerHTML = sessions.map(s => {
+    const castParts = [s.yujinA, s.yujinB, s.haejin, s.jiwon].filter(Boolean);
+    return `<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 0;">
+      <input type="radio" name="stamp-session" value="${s.time}">
+      ${s.time} ${castParts.join(' · ')}
+    </label>`;
+  }).join('');
+}
+
+function onUnconfirmedChange() {
+  // visual feedback only
 }
 
 function recalcStampCount(board) {
@@ -2280,19 +2341,27 @@ function applyStampToBoard(boardId, qty, date, historyComment, comment) {
 }
 
 function addStamp() {
-  const boardId = document.getElementById('stamp-board-id').value;
-  const method  = document.querySelector('input[name="stamp-method"]:checked').value;
-  const qty     = method === '더블 적립' ? 2 : method === '트리플 적립' ? 3 : 1;
-  const dateEl  = document.getElementById('stamp-date');
-  const date    = dateEl && dateEl.value ? dateEl.value : localDate();
+  const boardId   = document.getElementById('stamp-board-id').value;
+  const method    = document.querySelector('input[name="stamp-method"]:checked').value;
+  const qtyEl     = document.querySelector('input[name="stamp-qty"]:checked');
+  const qty       = qtyEl ? parseInt(qtyEl.value) || 1 : (method === '더블 적립' ? 2 : method === '트리플 적립' ? 3 : 1);
+  const dateEl    = document.getElementById('stamp-date');
+  const date      = dateEl && dateEl.value ? dateEl.value : localDate();
+  const sessionEl = document.querySelector('input[name="stamp-session"]:checked');
+  const fullMethod = sessionEl ? `${method} (${sessionEl.value})` : method;
   const exchangeMemo = document.getElementById('stamp-exchange-memo')?.value.trim() || '';
   const commentRaw   = document.getElementById('stamp-comment')?.value.trim() || '';
   const comment = exchangeMemo ? (commentRaw ? `${exchangeMemo} / ${commentRaw}` : exchangeMemo) : commentRaw;
-  const toastMsg = applyStampToBoard(boardId, qty, date, method, comment);
+  const toastMsg = applyStampToBoard(boardId, qty, date, fullMethod, comment);
   if (!toastMsg) return;
   closePanel('overlay-add-stamp');
   showToast(toastMsg);
   renderStampBoards(); renderCouponList(); renderHome();
+  if (_directStampFromHistory) {
+    _directStampFromHistory = false;
+    renderStampHistoryPanel();
+    openPanel('overlay-stamp-history');
+  }
 }
 
 function openAddStampBoardFromRecord() {
@@ -2398,7 +2467,7 @@ function renderCouponList() {
   const records = getRecords();
   const today   = localDate();
 
-  const histCollapsed = DB.get('couponHistoryCollapsed', true);
+  const histCollapsed = DB.get('couponHistoryCollapsed', false);
   const histWrap = document.getElementById('coupon-history-wrap');
   const histIcon = document.getElementById('coupon-history-toggle-icon');
   if (histWrap) histWrap.style.display = histCollapsed ? 'none' : '';
