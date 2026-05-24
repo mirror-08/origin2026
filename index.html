@@ -802,6 +802,25 @@
   </div>
 </div>
 
+<!-- ===== BENEFIT SELECT PANEL ===== -->
+<div class="overlay" id="overlay-benefit-select">
+  <div class="panel">
+    <div class="panel-handle"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:32px;margin-bottom:8px;">🎉</div>
+      <div class="panel-title" style="margin-bottom:6px;">혜택 선택</div>
+      <div style="font-size:13px;color:var(--text2);" id="benefit-board-desc">마니아 카드 5칸 달성!</div>
+    </div>
+    <input type="hidden" id="benefit-board-id">
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+      <button class="btn btn-primary" onclick="selectBenefit('discount50')" style="padding:16px;font-size:15px;font-weight:700;">🎟 50% 할인권 2매</button>
+      <button class="btn btn-outline" onclick="selectBenefit('ost')" style="padding:16px;font-size:15px;font-weight:700;">💿 실황 OST 1매</button>
+    </div>
+    <button class="btn btn-outline" onclick="closePanel('overlay-benefit-select')" style="width:100%;font-size:12px;color:var(--text3);">나중에 선택</button>
+    <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px;">선택 후 쿠폰 현황에 자동 반영됩니다</div>
+  </div>
+</div>
+
 <!-- ===== ADD STAMP PANEL ===== -->
 <div class="overlay" id="overlay-add-stamp">
   <div class="panel">
@@ -1972,8 +1991,10 @@ function renderStampBoards() {
     }
     slotsHtml += '</div>';
 
+    const pendingBenefit = (b.milestones || []).some(m => m.notified && !m.benefitSelected && m.couponKey === null);
     let statusHtml = '';
     if (paused)               statusHtml = `<div class="stamp-status-row stamp-status-paused">일시정지 중</div>`;
+    else if (pendingBenefit)  statusHtml = `<div class="stamp-status-row"><button class="btn btn-primary btn-sm" style="width:100%;font-size:12px;padding:5px;" onclick="openBenefitSelect('${b.id}')">🎁 혜택 선택하기</button></div>`;
     else if (alldone)         statusHtml = `<div class="stamp-status-row stamp-status-done">★ 보상 달성!</div>`;
     else if (toNext !== null) statusHtml = `<div class="stamp-status-row stamp-status-next">다음 보상까지 ${toNext}개</div>`;
 
@@ -2010,6 +2031,7 @@ function renderStampBoards() {
 
 let _stampHistoryPanelBoardId = null;
 let _directStampFromHistory = false;
+let _pendingBenefitBoardId = null;
 
 function openStampHistory(boardId) {
   _stampHistoryPanelBoardId = boardId;
@@ -2271,15 +2293,22 @@ function applyStampToBoard(boardId, qty, date, historyComment, comment) {
   board.history.push({ date, method: historyComment + qtyLabel, comment: comment || '', qty: actualQty });
   recalcStampCount(board);
   if (!board.milestones) board.milestones = [{ at:5, reward:'50% 할인권 2매 또는 실황 OST 선택', couponKey:null, notified:false }];
+  _pendingBenefitBoardId = null;
   let toastMsg = '도장 ' + actualQty + '개 완료 (' + board.currentCount + '/' + board.totalSlots + ')';
   board.milestones.forEach(m => {
     if (board.currentCount >= m.at && !m.notified) {
       m.notified = true;
-      toastMsg = '★ ' + m.reward + ' 달성!';
+      if (m.couponKey === null && !m.benefitSelected) {
+        _pendingBenefitBoardId = boardId;
+      } else {
+        toastMsg = '★ ' + m.reward + ' 달성!';
+      }
     }
   });
   if (board.currentCount >= board.totalSlots) {
-    toastMsg = '★ 마니아 카드 완성! ' + (board.reward||'');
+    toastMsg = _pendingBenefitBoardId
+      ? '🎉 마니아 카드 완성! 혜택을 선택해 주세요'
+      : '★ 마니아 카드 완성! ' + (board.reward||'');
     if (actualQty < qty) toastMsg += ' (' + (qty - actualQty) + '개 초과분 제외)';
   }
   saveStampBoards(boards);
@@ -2303,11 +2332,58 @@ function addStamp() {
   closePanel('overlay-add-stamp');
   showToast(toastMsg);
   renderStampBoards(); renderCouponList(); renderHome();
-  if (_directStampFromHistory) {
+  if (_pendingBenefitBoardId) {
+    const bs = getStampBoards();
+    const pb = bs.find(b => b.id === _pendingBenefitBoardId);
+    document.getElementById('benefit-board-id').value = _pendingBenefitBoardId;
+    document.getElementById('benefit-board-desc').textContent = `[${pb?.name || ''}] 5칸 달성! 혜택을 선택해주세요.`;
+    openPanel('overlay-benefit-select');
+  } else if (_directStampFromHistory) {
     _directStampFromHistory = false;
     renderStampHistoryPanel();
     openPanel('overlay-stamp-history');
   }
+}
+
+function openBenefitSelect(boardId) {
+  const boards = getStampBoards();
+  const board = boards.find(b => b.id === boardId);
+  if (!board) return;
+  document.getElementById('benefit-board-id').value = boardId;
+  document.getElementById('benefit-board-desc').textContent = `[${board.name || ''}] 5칸 달성! 혜택을 선택해주세요.`;
+  openPanel('overlay-benefit-select');
+}
+
+function selectBenefit(key) {
+  const boardId = document.getElementById('benefit-board-id').value;
+  const boards = getStampBoards();
+  const board = boards.find(b => b.id === boardId);
+  if (!board) { closePanel('overlay-benefit-select'); return; }
+
+  // 마일스톤에 혜택 선택 완료 표시
+  (board.milestones || []).forEach(m => {
+    if (m.notified && !m.benefitSelected && m.couponKey === null) {
+      m.benefitSelected = true;
+      m.selectedKey = key;
+    }
+  });
+  saveStampBoards(boards);
+
+  // 쿠폰 history에 획득 기록
+  const coupons = getCoupons();
+  const qty = key === 'discount50' ? 2 : 1;
+  const label = key === 'discount50' ? '50% 할인권 2매' : '실황 OST 1매';
+  if (!coupons[key]) coupons[key] = { count: 0, history: [] };
+  coupons[key].history.push({
+    date: localDate(), type: '획득', qty,
+    comment: `마니아 카드 달성 (${board.name || ''})`
+  });
+  saveCoupons(coupons);
+
+  _pendingBenefitBoardId = null;
+  closePanel('overlay-benefit-select');
+  showToast(`🎉 ${label} 획득! 쿠폰 현황에 반영됐습니다.`);
+  renderHome(); renderStampBoards(); renderCouponList();
 }
 
 function openAddStampBoardFromRecord() {
