@@ -668,11 +668,6 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label">티켓 가격 (원)</label>
-      <input type="number" class="form-control" id="rec-price" placeholder="예: 55000">
-    </div>
-
-    <div class="form-group">
       <label class="form-label">한줄 코멘트</label>
       <input type="text" class="form-control" id="rec-comment" placeholder="예매처, 메모 등">
     </div>
@@ -699,22 +694,6 @@
           </label>
         </div>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">별점</label>
-      <div class="star-group" id="star-group">
-        <button class="star-btn" onclick="setStar(1)">☆</button>
-        <button class="star-btn" onclick="setStar(2)">☆</button>
-        <button class="star-btn" onclick="setStar(3)">☆</button>
-        <button class="star-btn" onclick="setStar(4)">☆</button>
-        <button class="star-btn" onclick="setStar(5)">☆</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">감상 메모</label>
-      <textarea class="form-control" id="rec-memo" placeholder="자유롭게 기록해보세요..."></textarea>
     </div>
 
     <div style="display:flex;gap:10px;margin-top:8px;">
@@ -1129,16 +1108,13 @@ function openAddRecord(date) {
   document.getElementById('rec-jiwon').value  = '';
   document.getElementById('rec-zone').value = '';
   document.getElementById('rec-num').value = '';
-  document.getElementById('rec-price').value = '';
   document.getElementById('rec-discount-type').value = '';
   document.getElementById('rec-discount-warn').style.display = 'none';
   document.getElementById('rec-comment').value = '';
-  document.getElementById('rec-memo').value = '';
   document.getElementById('rec-unconfirmed').checked = false;
   populateStampSelect();
   document.getElementById('rec-stamp-board').value = '';
   onRecStampBoardChange();
-  resetStars();
   if (date) autoFillCasting();
   openPanel('overlay-record');
 }
@@ -1159,11 +1135,9 @@ function editRecord(id) {
   document.getElementById('rec-jiwon').value  = r.jiwon||'';
   document.getElementById('rec-zone').value = r.seatZone||'';
   document.getElementById('rec-num').value = r.seatNumber||'';
-  document.getElementById('rec-price').value = r.price||'';
   document.getElementById('rec-discount-type').value = r.discountType||'';
   document.getElementById('rec-discount-warn').style.display = 'none';
   document.getElementById('rec-comment').value = r.comment||'';
-  document.getElementById('rec-memo').value = r.memo||'';
   document.getElementById('rec-unconfirmed').checked = r.isBooked === false;
   populateStampSelect(r.stampBoardId || null);
   onRecStampBoardChange();
@@ -1171,7 +1145,6 @@ function editRecord(id) {
     const qtyEl = document.querySelector(`input[name="rec-stamp-qty"][value="${r.stampQty}"]`);
     if (qtyEl) { qtyEl.checked = true; updateRecQtyLabel(); }
   }
-  setStar(r.rating||0);
   openPanel('overlay-record');
 }
 
@@ -1187,7 +1160,6 @@ function saveRecord() {
   const records  = getRecords();
   const editId   = document.getElementById('edit-record-id').value;
   const numVal   = document.getElementById('rec-num').value;
-  const priceVal = document.getElementById('rec-price').value;
   const isBooked = !document.getElementById('rec-unconfirmed').checked;
   const stampBoardId  = document.getElementById('rec-stamp-board').value;
   const recQtyEl      = document.querySelector('input[name="rec-stamp-qty"]:checked');
@@ -1214,13 +1186,13 @@ function saveRecord() {
     seatZone:     document.getElementById('rec-zone').value||null,
     seatRow:      null,
     seatNumber:   numVal!=='' ? parseInt(numVal) : null,
-    price:        priceVal!=='' ? parseInt(priceVal) : null,
+    price:        null,
     discountType: discountType,
     stampBoardId: stampBoardId || null,
     stampQty:     stampBoardId ? stampQty : null,
-    rating:       currentStar,
+    rating:       null,
     comment:      document.getElementById('rec-comment').value.trim(),
-    memo:         document.getElementById('rec-memo').value.trim(),
+    memo:         null,
     createdAt:    editId ? (prevRecord?.createdAt||new Date().toISOString()) : new Date().toISOString(),
     updatedAt:    new Date().toISOString()
   };
@@ -1309,8 +1281,8 @@ function openDetail(id) {
     html += `<div class="detail-field"><div class="detail-field-label">좌석</div><div class="detail-field-value">${r.seatZone} ${r.seatNumber}번</div></div>`;
     html += buildMiniSeat(r.seatZone, r.seatNumber);
   }
-  if (r.price != null && r.price !== '') {
-    html += `<div class="detail-field"><div class="detail-field-label">티켓 가격</div><div class="detail-field-value">₩${r.price.toLocaleString()}${r.discountType ? ` <span style="font-size:11px;color:var(--accent);background:var(--accent-light);padding:2px 6px;border-radius:4px;margin-left:4px;">${DISCOUNT_LABEL[r.discountType] || r.discountType}</span>` : ''}</div></div>`;
+  if (r.discountType) {
+    html += `<div class="detail-field"><div class="detail-field-label">할인권종</div><div class="detail-field-value"><span style="font-size:12px;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:6px;">${DISCOUNT_LABEL[r.discountType] || r.discountType}</span></div></div>`;
   }
   if (r.stampBoardId) {
     const boards = getStampBoards();
@@ -1687,8 +1659,10 @@ function renderCalendar() {
           const isDone   = doneSet.has(key);
           const chipCls  = isBooked ? 'cal-session-chip booked' : isDone ? 'cal-session-chip done' : 'cal-session-chip';
           const icon     = isDone ? '✅ ' : '';
-          const castShort = [sn(s.yujinA), sn(s.yujinB), sn(s.haejin), sn(s.jiwon)].filter(Boolean).join('·');
-          return `<div class="${chipCls}"><span class="cs-time">${icon}${s.time}</span><span class="cs-cast">${castShort}</span></div>`;
+          const castLine1 = [sn(s.yujinA), sn(s.yujinB)].filter(Boolean).join('·');
+          const castLine2 = [sn(s.haejin), sn(s.jiwon)].filter(Boolean).join('·');
+          const castHtml = castLine2 ? `${castLine1}<br>${castLine2}` : castLine1;
+          return `<div class="${chipCls}"><span class="cs-time">${icon}${s.time}</span><span class="cs-cast">${castHtml}</span></div>`;
         }).join('');
       }
       html += `<div class="${cls}" onclick="calDayClick('${ds}')">
@@ -1810,24 +1784,28 @@ function renderStats() {
   jiwonActors.forEach(a => { ah += `<tr><td>${a}</td><td style="color:var(--text3)">${countSch('jiwon',a)}</td><td>${countAct('jiwon',a)}</td></tr>`; });
   document.getElementById('stats-actors').innerHTML = ah;
 
-  // 페어 (유진A × 유진B) - 스케줄+기록 기반 동적 생성
+  // 페어 (4명 전체 조합) - 스케줄+기록 기반 동적 생성
   const pairMap = {};
   schedule.forEach(s => {
     if (!s.yujinA || !s.yujinB) return;
-    const k = s.yujinA + '|' + s.yujinB;
-    if (!pairMap[k]) pairMap[k] = { a: s.yujinA, b: s.yujinB, tot: 0, seen: 0 };
+    const k = [s.yujinA, s.yujinB, s.haejin||'', s.jiwon||''].join('|');
+    if (!pairMap[k]) pairMap[k] = { a: s.yujinA, b: s.yujinB, h: s.haejin||'', j: s.jiwon||'', tot: 0, seen: 0 };
     pairMap[k].tot++;
   });
   records.forEach(r => {
     if (!r.yujinA || !r.yujinB) return;
-    const k = r.yujinA + '|' + r.yujinB;
-    if (!pairMap[k]) pairMap[k] = { a: r.yujinA, b: r.yujinB, tot: 0, seen: 0 };
+    const k = [r.yujinA, r.yujinB, r.haejin||'', r.jiwon||''].join('|');
+    if (!pairMap[k]) pairMap[k] = { a: r.yujinA, b: r.yujinB, h: r.haejin||'', j: r.jiwon||'', tot: 0, seen: 0 };
     pairMap[k].seen++;
   });
   let ph = '<tr><th>페어</th><th>총 회차</th><th>관람</th></tr>';
   const sortedPairs = Object.values(pairMap).sort((x,y) => x.a.localeCompare(y.a,'ko') || x.b.localeCompare(y.b,'ko'));
   sortedPairs.forEach(p => {
-    ph += `<tr><td><div style="font-size:12px;font-weight:600;">${p.a}<span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:3px;">유진A</span></div><div style="font-size:11px;color:var(--text2);margin-top:1px;">${p.b}<span style="font-size:9px;color:var(--text3);margin-left:3px;">유진B</span></div></td><td style="color:var(--text3)">${p.tot||'-'}</td><td>${p.seen}</td></tr>`;
+    const l2parts = [];
+    if (p.h) l2parts.push(`${p.h}<span style="font-size:9px;color:var(--text3);margin-left:3px;">해진</span>`);
+    if (p.j) l2parts.push(`${p.j}<span style="font-size:9px;color:var(--text3);margin-left:3px;">지원</span>`);
+    const line2 = l2parts.join(' · ');
+    ph += `<tr><td><div style="font-size:12px;font-weight:600;">${p.a}<span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:3px;">유진A</span> · ${p.b}<span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:3px;">유진B</span></div>${line2 ? `<div style="font-size:11px;color:var(--text2);margin-top:1px;">${line2}</div>` : ''}</td><td style="color:var(--text3)">${p.tot||'-'}</td><td>${p.seen}</td></tr>`;
   });
   if (!sortedPairs.length) ph += '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">기록 없음</td></tr>';
   document.getElementById('stats-pairs').innerHTML = ph;
