@@ -286,16 +286,14 @@
 
   /* 원형 도장 슬롯 */
   .stamp-slots-row { display: flex; justify-content: center; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
-  .stamp-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .stamp-slot {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     border: 2.5px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; background: var(--bg3); transition: all 0.2s; flex-shrink: 0;
   }
   .stamp-slot.filled { border-color: var(--accent); background: var(--accent-light); }
   .stamp-slot.scheduled { border-color: var(--border); background: var(--bg3); opacity: 0.55; }
-  .stamp-slot-label { font-size: 8px; color: var(--text3); font-weight: 700; text-align: center; height: 11px; line-height: 11px; }
   .stamp-board { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; transition: opacity 0.2s; }
   .stamp-board.paused { opacity: 0.45; }
   .stamp-board-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
@@ -304,12 +302,12 @@
   .stamp-menu-btn { width: 24px; height: 24px; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text2); line-height: 1; }
   .stamp-menu-btn.danger { color: var(--danger); }
   .stamp-progress-wrap { margin: 6px 0 4px; }
-  .stamp-count-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
-  .stamp-count-cur { font-size: 13px; font-weight: 700; color: var(--accent); }
-  .stamp-count-final { font-size: 11px; color: var(--text3); }
+  .stamp-count-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+  .stamp-count-cur { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .stamp-count-final { font-size: 10px; color: var(--text3); }
   .progress-bar { width: 100%; height: 12px; background: var(--bg3); border-radius: 6px; overflow: hidden; position: relative; }
   .progress-fill { height: 100%; background: var(--accent); border-radius: 6px; transition: width 0.4s ease; }
-  .stamp-status-row { font-size: 11px; margin-top: 5px; min-height: 16px; }
+  .stamp-status-row { font-size: 11px; margin-top: 4px; min-height: 15px; }
   .stamp-status-done { color: var(--star); font-weight: 700; }
   .stamp-status-next { color: var(--text3); }
   .stamp-status-paused { color: var(--text3); font-style: italic; }
@@ -1971,29 +1969,14 @@ function renderStampBoards() {
     const nextMs   = [...milestones].sort((a,b2)=>a.at-b2.at).find(m => cur < m.at);
     const toNext   = nextMs ? nextMs.at - cur : null;
 
-    // 마일스톤 슬롯 라벨 생성
-    const slotLabels = {};
-    milestones.forEach(m => {
-      const r = m.reward || '';
-      const hasOst = r.includes('OST');
-      const has50  = r.includes('할인권') || r.includes('50%');
-      let label = '';
-      if (hasOst && has50) label = '선택';
-      else if (hasOst)     label = 'OST';
-      else if (has50)      label = '50%';
-      if (label) slotLabels[m.at] = label;
-    });
-
     // 원형 도장 슬롯 생성
     let slotsHtml = '<div class="stamp-slots-row">';
     for (let i = 1; i <= total; i++) {
       const isFilled    = i <= cur;
       const isScheduled = !isFilled && i <= final;
-      const label       = slotLabels[i] || '';
       const slotCls     = isFilled ? 'stamp-slot filled' : (isScheduled ? 'stamp-slot scheduled' : 'stamp-slot');
-      const labelColor  = isFilled ? 'color:var(--accent);' : '';
       const icon = isFilled ? '🌊' : '';
-      slotsHtml += `<div class="stamp-slot-wrap"><div class="${slotCls}">${icon}</div><div class="stamp-slot-label" style="${labelColor}">${label}</div></div>`;
+      slotsHtml += `<div class="${slotCls}">${icon}</div>`;
     }
     slotsHtml += '</div>';
 
