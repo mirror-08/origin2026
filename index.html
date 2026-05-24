@@ -236,13 +236,13 @@
   [data-theme="dark"] .casting-tag.jiwon  { background: #2a1a3a; color: #b090d8; }
 
   /* HOME */
-  .next-show-card { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); border-radius: var(--radius); padding: 18px; margin-bottom: 8px; color: #fff; position: relative; overflow: hidden; cursor: pointer; }
-  .next-show-card::before { content: '🌊'; position: absolute; right: 16px; top: 12px; font-size: 40px; opacity: 0.15; }
-  .next-show-dday { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 4px; }
+  .next-show-card { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); border-radius: var(--radius); padding: 14px; margin-bottom: 6px; color: #fff; position: relative; overflow: hidden; cursor: pointer; }
+  .next-show-card::before { content: '🌊'; position: absolute; right: 14px; top: 10px; font-size: 34px; opacity: 0.15; }
+  .next-show-dday { font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 2px; }
   .next-show-dday.today-dday { color: #ffe066; }
-  .next-show-date { font-size: 13px; opacity: 0.85; margin-bottom: 10px; }
-  .next-show-casting { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-  .next-show-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .next-show-date { font-size: 12px; opacity: 0.85; margin-bottom: 8px; }
+  .next-show-casting { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .next-show-pill { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .next-show-pill.yujinA { background: rgba(255,255,255,0.28); }
   .next-show-pill.yujinB { background: rgba(255,210,210,0.3); }
   .next-show-pill.haejin { background: rgba(200,255,245,0.25); }
@@ -2021,7 +2021,8 @@ function renderStampBoards() {
       const label       = slotLabels[i] || '';
       const slotCls     = isFilled ? 'stamp-slot filled' : (isScheduled ? 'stamp-slot scheduled' : 'stamp-slot');
       const labelColor  = isFilled ? 'color:var(--accent);' : '';
-      slotsHtml += `<div class="stamp-slot-wrap"><div class="${slotCls}">🌊</div><div class="stamp-slot-label" style="${labelColor}">${label}</div></div>`;
+      const icon = isFilled ? '🌊' : '';
+      slotsHtml += `<div class="stamp-slot-wrap"><div class="${slotCls}">${icon}</div><div class="stamp-slot-label" style="${labelColor}">${label}</div></div>`;
     }
     slotsHtml += '</div>';
 
