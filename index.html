@@ -285,7 +285,9 @@
   .stamp-cards-grid { display: flex; flex-direction: column; gap: 8px; }
 
   /* 원형 도장 슬롯 */
-  .stamp-slots-row { display: flex; justify-content: center; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
+  .stamp-slots-row { display: flex; justify-content: center; align-items: flex-start; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
+  .stamp-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .stamp-slot-label { font-size: 7px; color: var(--accent); font-weight: 700; text-align: center; line-height: 1.3; }
   .stamp-slot {
     width: 32px; height: 32px; border-radius: 50%;
     border: 2.5px solid var(--border);
@@ -1980,6 +1982,19 @@ function renderStampBoards() {
     const nextMs   = [...milestones].sort((a,b2)=>a.at-b2.at).find(m => cur < m.at);
     const toNext   = nextMs ? nextMs.at - cur : null;
 
+    // 마일스톤 슬롯 라벨 생성 (마일스톤 위치에만 표시)
+    const slotLabels = {};
+    milestones.forEach(m => {
+      const r = m.reward || '';
+      const hasOst = r.includes('OST');
+      const has50  = r.includes('할인권') || r.includes('50%');
+      let label = '';
+      if (hasOst && has50) label = '50%×2<br>or OST';
+      else if (hasOst)     label = 'OST';
+      else if (has50)      label = '50%×2';
+      if (label) slotLabels[m.at] = label;
+    });
+
     // 원형 도장 슬롯 생성
     let slotsHtml = '<div class="stamp-slots-row">';
     for (let i = 1; i <= total; i++) {
@@ -1987,14 +2002,18 @@ function renderStampBoards() {
       const isScheduled = !isFilled && i <= final;
       const slotCls     = isFilled ? 'stamp-slot filled' : (isScheduled ? 'stamp-slot scheduled' : 'stamp-slot');
       const icon = isFilled ? '🌊' : '';
-      slotsHtml += `<div class="${slotCls}">${icon}</div>`;
+      const label = slotLabels[i] || '';
+      if (label) {
+        slotsHtml += `<div class="stamp-slot-wrap"><div class="${slotCls}">${icon}</div><div class="stamp-slot-label">${label}</div></div>`;
+      } else {
+        slotsHtml += `<div class="${slotCls}">${icon}</div>`;
+      }
     }
     slotsHtml += '</div>';
 
     const pendingBenefit = (b.milestones || []).some(m => m.notified && !m.benefitSelected && m.couponKey === null);
     let statusHtml = '';
     if (paused)               statusHtml = `<div class="stamp-status-row stamp-status-paused">일시정지 중</div>`;
-    else if (pendingBenefit)  statusHtml = `<div class="stamp-status-row"><button class="btn btn-primary btn-sm" style="width:100%;font-size:12px;padding:5px;" onclick="openBenefitSelect('${b.id}')">🎁 혜택 선택하기</button></div>`;
     else if (alldone)         statusHtml = `<div class="stamp-status-row stamp-status-done">★ 보상 달성!</div>`;
     else if (toNext !== null) statusHtml = `<div class="stamp-status-row stamp-status-next">다음 보상까지 ${toNext}개</div>`;
 
@@ -2015,6 +2034,7 @@ function renderStampBoards() {
       ${statusHtml}
       <div class="stamp-actions">
         ${(!alldone && !paused) ? `<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:5px 4px;" onclick="openAddStamp('${b.id}')">+ 도장 찍기</button>` : ''}
+        ${pendingBenefit ? `<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:5px 4px;" onclick="openBenefitSelect('${b.id}')">🎁 혜택 선택</button>` : ''}
         <button class="stamp-history-btn" onclick="openStampHistory('${b.id}')">이력 보기</button>
       </div>
     </div>`;
