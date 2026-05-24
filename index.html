@@ -1441,10 +1441,11 @@ function renderHome() {
     const diff   = Math.round((d-todayD)/86400000);
     const dday   = diff===0 ? 'D-DAY' : `D-${diff}`;
     const seat   = nextShow.seatZone ? `${nextShow.seatZone} ${nextShow.seatNumber}번` : '';
-    let pillsHtml = `<span class="next-show-pill yujinA">${nextShow.yujinA}</span>`;
-    pillsHtml    += `<span class="next-show-pill yujinB">${nextShow.yujinB}</span>`;
-    if (nextShow.haejin) pillsHtml += `<span class="next-show-pill haejin">${nextShow.haejin}</span>`;
-    if (nextShow.jiwon)  pillsHtml += `<span class="next-show-pill jiwon">${nextShow.jiwon}</span>`;
+    const roleLabel = s => `<span style="font-size:9px;font-weight:400;opacity:0.8;">${s} </span>`;
+    let pillsHtml = `<span class="next-show-pill yujinA">${roleLabel('유진A')}${nextShow.yujinA}</span>`;
+    pillsHtml    += `<span class="next-show-pill yujinB">${roleLabel('유진B')}${nextShow.yujinB}</span>`;
+    if (nextShow.haejin) pillsHtml += `<span class="next-show-pill haejin">${roleLabel('해진')}${nextShow.haejin}</span>`;
+    if (nextShow.jiwon)  pillsHtml += `<span class="next-show-pill jiwon">${roleLabel('지원/혜원')}${nextShow.jiwon}</span>`;
     document.getElementById('home-next-show').innerHTML = `
       <div class="next-show-card" onclick="openDetail('${nextShow.id}')">
         <div class="next-show-dday${diff===0?' today-dday':''}">${dday}${nextShow.isBooked===false ? ' <span style="font-size:14px;opacity:0.7;font-weight:400;">미정</span>' : ''}</div>
