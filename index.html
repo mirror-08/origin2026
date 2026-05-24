@@ -1824,12 +1824,12 @@ function renderStats() {
     if (!pairMap[k]) pairMap[k] = { a: r.yujinA, b: r.yujinB, tot: 0, seen: 0 };
     pairMap[k].seen++;
   });
-  let ph = '<tr><th>유진A</th><th>유진B</th><th>총 회차</th><th>관람</th></tr>';
+  let ph = '<tr><th>페어</th><th>총 회차</th><th>관람</th></tr>';
   const sortedPairs = Object.values(pairMap).sort((x,y) => x.a.localeCompare(y.a,'ko') || x.b.localeCompare(y.b,'ko'));
   sortedPairs.forEach(p => {
-    ph += `<tr><td>${p.a}</td><td>${p.b}</td><td style="color:var(--text3)">${p.tot||'-'}</td><td>${p.seen}</td></tr>`;
+    ph += `<tr><td><div style="font-size:12px;font-weight:600;">${p.a}<span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:3px;">유진A</span></div><div style="font-size:11px;color:var(--text2);margin-top:1px;">${p.b}<span style="font-size:9px;color:var(--text3);margin-left:3px;">유진B</span></div></td><td style="color:var(--text3)">${p.tot||'-'}</td><td>${p.seen}</td></tr>`;
   });
-  if (!sortedPairs.length) ph += '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:12px;">기록 없음</td></tr>';
+  if (!sortedPairs.length) ph += '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">기록 없음</td></tr>';
   document.getElementById('stats-pairs').innerHTML = ph;
 
   renderHeatmap();
