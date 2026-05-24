@@ -286,17 +286,17 @@
   .stamp-cards-grid { display: flex; flex-direction: column; gap: 8px; }
 
   /* 원형 도장 슬롯 */
-  .stamp-slots-row { display: flex; justify-content: center; gap: 8px; padding: 10px 0 4px; flex-wrap: wrap; }
-  .stamp-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .stamp-slots-row { display: flex; justify-content: center; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
+  .stamp-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .stamp-slot {
-    width: 48px; height: 48px; border-radius: 50%;
+    width: 36px; height: 36px; border-radius: 50%;
     border: 2.5px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px; background: var(--bg3); transition: all 0.2s; flex-shrink: 0;
+    font-size: 16px; background: var(--bg3); transition: all 0.2s; flex-shrink: 0;
   }
   .stamp-slot.filled { border-color: var(--accent); background: var(--accent-light); }
   .stamp-slot.scheduled { border-color: var(--border); background: var(--bg3); opacity: 0.55; }
-  .stamp-slot-label { font-size: 9px; color: var(--text3); font-weight: 600; text-align: center; min-height: 12px; }
+  .stamp-slot-label { font-size: 8px; color: var(--text3); font-weight: 700; text-align: center; height: 11px; line-height: 11px; }
   .stamp-board { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; transition: opacity 0.2s; }
   .stamp-board.paused { opacity: 0.45; }
   .stamp-board-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
@@ -314,8 +314,8 @@
   .stamp-status-done { color: var(--star); font-weight: 700; }
   .stamp-status-next { color: var(--text3); }
   .stamp-status-paused { color: var(--text3); font-style: italic; }
-  .stamp-actions { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
-  .stamp-history-btn { width: 100%; padding: 6px; border-radius: 7px; background: var(--bg3); border: 1px solid var(--border); cursor: pointer; font-size: 12px; color: var(--text2); font-weight: 500; text-align: center; }
+  .stamp-actions { margin-top: 7px; display: flex; flex-direction: row; gap: 5px; }
+  .stamp-history-btn { flex: 1; padding: 5px 4px; border-radius: 7px; background: var(--bg3); border: 1px solid var(--border); cursor: pointer; font-size: 11px; color: var(--text2); font-weight: 500; text-align: center; }
 
   /* 쿠폰 가로 카드 */
   .coupon-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -410,8 +410,8 @@
   </div>
   <div class="card">
     <div class="card-title">📋 최근 관람</div>
-    <div id="home-recent"></div>
-    <div id="home-recent-more" style="text-align:center;margin-top:6px;"></div>
+    <div id="home-recent" style="max-height:90px;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
+    <div id="home-recent-more" style="text-align:center;margin-top:4px;"></div>
   </div>
 </div>
 
@@ -2046,7 +2046,7 @@ function renderStampBoards() {
       ${slotsHtml}
       ${statusHtml}
       <div class="stamp-actions">
-        ${(!alldone && !paused) ? `<button class="btn btn-primary btn-sm" style="width:100%;" onclick="openAddStamp('${b.id}')">+ 도장 찍기</button>` : ''}
+        ${(!alldone && !paused) ? `<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:5px 4px;" onclick="openAddStamp('${b.id}')">+ 도장 찍기</button>` : ''}
         <button class="stamp-history-btn" onclick="openStampHistory('${b.id}')">이력 보기</button>
       </div>
     </div>`;
@@ -2057,7 +2057,6 @@ function renderStampBoards() {
     html += `<div style="overflow-x:auto;scroll-snap-type:x mandatory;display:flex;-webkit-overflow-scrolling:touch;gap:0;">${
       cardArr.map(c => `<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;box-sizing:border-box;padding:2px 0;">${c}</div>`).join('')
     }</div>`;
-    html += `<div style="text-align:center;font-size:11px;color:var(--text3);margin-top:4px;">← 좌우로 밀어보세요 (${cardArr.length}개) →</div>`;
   }
   document.getElementById('stamp-boards-list').innerHTML = html;
 }
