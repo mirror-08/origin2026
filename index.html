@@ -2251,6 +2251,9 @@ function updateStampSessionOptions() {
   const container = document.getElementById('stamp-session-options');
   const exchangeMemoGroup = document.getElementById('stamp-exchange-memo-group');
   if (exchangeMemoGroup) exchangeMemoGroup.style.display = method === '교환' ? '' : 'none';
+  const autoQty = method === '더블 적립' ? 2 : method === '트리플 적립' ? 3 : 1;
+  const qtyEl = document.querySelector(`input[name="stamp-qty"][value="${autoQty}"]`);
+  if (qtyEl) { qtyEl.checked = true; updateQtyLabel(); }
   if (!group || !container) return;
   if (!date) { group.style.display = 'none'; return; }
   const sessions = getSchedule().filter(s => s.date === date);
